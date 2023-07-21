@@ -80,6 +80,7 @@ reg                             async_mux;
 // For simulation only, monitor stuff.  Only cross-module referenced
 // do not delete.
 `endif // ifndef VERILATOR
+
 reg                             diag_done;
 
 reg                             diag_done;
