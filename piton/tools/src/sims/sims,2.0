@@ -2179,6 +2179,10 @@ sub assemble_diag
       push @{$opt{asm_diag_root}}, "$ENV{ARIANE_ROOT}/tmp/riscv-tests/build/isa";
       push @{$opt{asm_diag_root}}, "$ENV{ARIANE_ROOT}/tmp/riscv-tests/build/benchmarks";
     }
+    elsif ($opt{sarg} and $opt{precompiled}) {
+      push @{$opt{asm_diag_root}}, "$ENV{SARG_ROOT}/tmp/riscv-tests/build/isa";
+      push @{$opt{asm_diag_root}}, "$ENV{SARG_ROOT}/tmp/riscv-tests/build/benchmarks";
+    }
 
     # find diagnostic
     my $diag_full_path = &find_diag_path ($opt{asm_diag_name}, $opt{asm_diag_path}, $opt{asm_diag_root}) ;
