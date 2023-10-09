@@ -25,7 +25,7 @@ def get_bootrom_info(devices, nCpus, cpuFreq, timeBaseFreq, periphFreq, dtsPath,
 
     gitver_cmd = "git log | grep commit -m1 | LD_LIBRARY_PATH= awk -e '{print $2;}'"
     piton_ver  = subprocess.check_output([gitver_cmd], shell=True)
-    ariane_ver = subprocess.check_output(["cd %s && %s" % (os.environ['ARIANE_ROOT'], gitver_cmd)], shell=True)
+    ariane_ver = "" # subprocess.check_output(["cd %s && %s" % (os.environ['ARIANE_ROOT'], gitver_cmd)], shell=True)
 
     # get length of memory
     memLen  = 0
@@ -201,127 +201,109 @@ def gen_riscv_dts(devices, nCpus, cpuFreq, timeBaseFreq, periphFreq, dtsPath, ti
     };
             ''' % (addrBase, _reg_fmt(addrBase, addrLen, 2, 2))
 
-    # TODO: this needs to be extended
-    # get the number of interrupt sources
-    numIrqs = 0
-    devWithIrq = ["uart", "net"];
-    for i in range(len(devices)):
-        if devices[i]["name"] in devWithIrq:
-            numIrqs += 1
+
+    # # TODO: this needs to be extended
+    # # get the number of interrupt sources
+    # numIrqs = 0
+    # devWithIrq = ["uart", "net"];
+    # for i in range(len(devices)):
+    #     if devices[i]["name"] in devWithIrq:
+    #         numIrqs += 1
 
 
-    # get the remaining periphs
-    ioDeviceNr=1
-    for i in range(len(devices)):
-        # CLINT
-        if devices[i]["name"] == "ariane_clint":
-            addrBase = devices[i]["base"]
-            addrLen  = devices[i]["length"]
-            tmpStr += '''
-        clint@%08x {
-            u-boot,dm-pre-reloc;
-            compatible = "riscv,clint0";
-            interrupts-extended = <''' % (addrBase)
-            for k in range(nCpus):
-                tmpStr += "&CPU%d_intc 3 &CPU%d_intc 7 " % (k,k)
-            tmpStr += '''>;
-            reg = <%s>;
-            reg-names = "control";
-        };
-            ''' % (_reg_fmt(addrBase, addrLen, 2, 2))
-        # PLIC
-        if devices[i]["name"] == "ariane_plic":
-            addrBase = devices[i]["base"]
-            addrLen  = devices[i]["length"]
-            tmpStr += '''
-        PLIC0: plic@%08x {
-            u-boot,dm-pre-reloc;
-            #address-cells = <0>;
-            #interrupt-cells = <1>;
-            compatible = "riscv,plic0";
-            interrupt-controller;
-            interrupts-extended = <''' % (addrBase)
-            for k in range(nCpus):
-                tmpStr += "&CPU%d_intc 11 &CPU%d_intc 9 " % (k,k)
-            tmpStr += '''>;
-            reg = <%s>;
-            riscv,max-priority = <7>;
-            riscv,ndev = <%d>;
-        };
-            ''' % (_reg_fmt(addrBase, addrLen, 2, 2), numIrqs)
+    # # get the remaining periphs
+    # ioDeviceNr=1
+    # for i in range(len(devices)):
+    #     # CLINT
+    #     if devices[i]["name"] == "ariane_clint":
+    #         addrBase = devices[i]["base"]
+    #         addrLen  = devices[i]["length"]
+    #         tmpStr += '''
+    #     clint@%08x {
+    #         compatible = "riscv,clint0";
+    #         interrupts-extended = <''' % (addrBase)
+    #         for k in range(nCpus):
+    #             tmpStr += "&CPU%d_intc 3 &CPU%d_intc 7 " % (k,k)
+    #         tmpStr += '''>;
+    #         reg = <%s>;
+    #         reg-names = "control";
+    #     };
+    #         ''' % (_reg_fmt(addrBase, addrLen, 2, 2))
+    #     # PLIC
+    #     if devices[i]["name"] == "ariane_plic":
+    #         addrBase = devices[i]["base"]
+    #         addrLen  = devices[i]["length"]
+    #         tmpStr += '''
+    #     PLIC0: plic@%08x {
+    #         #address-cells = <0>;
+    #         #interrupt-cells = <1>;
+    #         compatible = "riscv,plic0";
+    #         interrupt-controller;
+    #         interrupts-extended = <''' % (addrBase)
+    #         for k in range(nCpus):
+    #             tmpStr += "&CPU%d_intc 11 &CPU%d_intc 9 " % (k,k)
+    #         tmpStr += '''>;
+    #         reg = <%s>;
+    #         riscv,max-priority = <7>;
+    #         riscv,ndev = <%d>;
+    #     };
+    #         ''' % (_reg_fmt(addrBase, addrLen, 2, 2), numIrqs)
+    #     # UART
+    #     if devices[i]["name"] == "uart":
+    #         addrBase = devices[i]["base"]
+    #         addrLen  = devices[i]["length"]
+    #         tmpStr += '''
+    #     uart@%08x {
+    #         compatible = "ns16550";
+    #         reg = <%s>;
+    #         clock-frequency = <%d>;
+    #         current-speed = <115200>;
+    #         interrupt-parent = <&PLIC0>;
+    #         interrupts = <%d>;
+    #         reg-shift = <0>; // regs are spaced on 8 bit boundary (modified from Xilinx UART16550 to be ns16550 compatible)
+    #     };
+    #         ''' % (addrBase, _reg_fmt(addrBase, addrLen, 2, 2), periphFreq, ioDeviceNr)
+    #         ioDeviceNr+=1
 
-        # UART
-        # TODO: update uart sequence numbers
-        if devices[i]["name"] == "uart":
-            addrBase = devices[i]["base"]
-            addrLen  = devices[i]["length"]
-            tmpStr += '''
-        uart0: uart@%08x {
-            u-boot,dm-pre-reloc;
-            compatible = "ns16550";
-            reg = <%s>;
-            clock-frequency = <%d>;
-            current-speed = <115200>;
-            interrupt-parent = <&PLIC0>;
-            interrupts = <%d>;
-            reg-shift = <0>; // regs are spaced on 8 bit boundary (modified from Xilinx UART16550 to be ns16550 compatible)
-        };
-            ''' % (addrBase, _reg_fmt(addrBase, addrLen, 2, 2), periphFreq, ioDeviceNr)
-            ioDeviceNr+=1
-
-        # sd card
-        if devices[i]["name"] == "sd":
-            addrBase = devices[i]["base"]
-            addrLen  = devices[i]["length"]
-            tmpStr += '''
-        sdhci_0: sdhci@%08x {
-            u-boot,dm-pre-reloc;
-            status = "okay";
-            compatible = "openpiton,piton-mmc";
-            reg = <%s>;
-        };
-            ''' %(addrBase, _reg_fmt(addrBase, addrLen, 2, 2))
-
-        # Ethernet
-        if devices[i]["name"] == "net":
-            addrBase = devices[i]["base"]
-            addrLen  = devices[i]["length"]
-            tmpStr += '''
-        eth: ethernet@%08x {
-            compatible = "xlnx,xps-ethernetlite-1.00.a";
-            device_type = "network";
-            reg = <%s>;
-            interrupt-parent = <&PLIC0>;
-            interrupts = <%d>;
-            local-mac-address = [ 00 18 3E 02 E3 E5 ];
-            phy-handle = <&phy0>;
-            xlnx,duplex = <0x1>;
-            xlnx,include-global-buffers = <0x1>;
-            xlnx,include-internal-loopback = <0x0>;
-            xlnx,include-mdio = <0x1>;
-            xlnx,rx-ping-pong = <0x1>;
-            xlnx,s-axi-id-width = <0x1>;
-            xlnx,tx-ping-pong = <0x1>;
-            xlnx,use-internal = <0x0>;
-            axi_ethernetlite_0_mdio: mdio {
-                #address-cells = <1>;
-                #size-cells = <0>;
-                phy0: phy@1 {
-                    compatible = "ethernet-phy-id001C.C915";
-                    device_type = "ethernet-phy";
-                    reg = <1>;
-                };
-            };
-        };
-            ''' % (addrBase, _reg_fmt(addrBase, addrLen, 2, 2), ioDeviceNr)
-            ioDeviceNr+=1
+    #     # Ethernet
+    #     if devices[i]["name"] == "net":
+    #         addrBase = devices[i]["base"]
+    #         addrLen  = devices[i]["length"]
+    #         tmpStr += '''
+    #     eth: ethernet@%08x {
+    #         compatible = "xlnx,xps-ethernetlite-1.00.a";
+    #         device_type = "network";
+    #         reg = <%s>;
+    #         interrupt-parent = <&PLIC0>;
+    #         interrupts = <%d>;
+    #         local-mac-address = [ 00 18 3E 02 E3 E5 ];
+    #         phy-handle = <&phy0>;
+    #         xlnx,duplex = <0x1>;
+    #         xlnx,include-global-buffers = <0x1>;
+    #         xlnx,include-internal-loopback = <0x0>;
+    #         xlnx,include-mdio = <0x1>;
+    #         xlnx,rx-ping-pong = <0x1>;
+    #         xlnx,s-axi-id-width = <0x1>;
+    #         xlnx,tx-ping-pong = <0x1>;
+    #         xlnx,use-internal = <0x0>;
+    #         axi_ethernetlite_0_mdio: mdio {
+    #             #address-cells = <1>;
+    #             #size-cells = <0>;
+    #             phy0: phy@1 {
+    #                 compatible = "ethernet-phy-id001C.C915";
+    #                 device_type = "ethernet-phy";
+    #                 reg = <1>;
+    #             };
+    #         };
+    #     };
+    #         ''' % (addrBase, _reg_fmt(addrBase, addrLen, 2, 2), ioDeviceNr)
+    #         ioDeviceNr+=1
 
     tmpStr += '''
 };
     '''
 
     # this needs to match
-    assert ioDeviceNr-1 == numIrqs
 
     with open(dtsPath + '/rv64_platform.dts','w+') as file:
         file.write(tmpStr)

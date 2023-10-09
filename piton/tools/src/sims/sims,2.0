@@ -173,6 +173,7 @@ Getopt::Long::Configure ('no_auto_abbrev') ;
         'parallel' => 0,
         'ost1' => 0,
         'ariane' => 0,
+        'sarg' => 0,
         'pico' => 0,
         'pico_het' => 0,
         'post_process_cmd' => [],
@@ -326,6 +327,7 @@ GetOptions (\%opt,
             'parallel!',
             'ost1!',
             'ariane!',
+            'sarg!',
             'pico!',
             'pico_het!',
             'sparcv9!',
@@ -349,13 +351,14 @@ die ("DIE. -pico and -pico_het cannot both be set") if ($opt{pico} && $opt{pico_
 
 # Setting ost1 by default. This works better than default to 1
 # for heterogeneous-ISA stuff
-if (!$opt{pico} && !$opt{ariane}) {
+if (!$opt{pico} && !$opt{ariane} && !$opt{sarg}) {
   $opt{ost1} = 1 ;
 }
 
 push (@{$opt{config_cpp_args}}, "-DFLIST_OST1")     if ($opt{ost1} || $opt{pico_het}) ;
 push (@{$opt{config_cpp_args}}, "-DFLIST_PICO")     if ($opt{pico} || $opt{pico_het}) ;
 push (@{$opt{config_cpp_args}}, "-DFLIST_ARIANE")   if ($opt{ariane}) ;
+push (@{$opt{config_cpp_args}}, "-DFLIST_SARG")     if ($opt{sarg}) ;
 push (@{$opt{config_cpp_args}}, "-DFLIST_ORAM")     if ($opt{oram}) ;
 
 ################################################################################
@@ -1279,8 +1282,13 @@ sub pre_build
     # 2 targets per core (M/S mode)
     my $num_targets = 2 * $ENV{PITON_NUM_TILES};
     print "generating PLIC for rv64 platform with $num_targets targets and $num_sources sources...\n";
-    !system("cd $ENV{ARIANE_ROOT}/corev_apu/rv_plic/rtl && ./gen_plic_addrmap.py -t $num_targets -s $num_sources > plic_regmap.sv") or
+    if ($opt{ariane}) {
+      !system("cd $ENV{ARIANE_ROOT}/corev_apu/rv_plic/rtl && ./gen_plic_addrmap.py -t $num_targets -s $num_sources > plic_regmap.sv") or
       die (" Error generating PLIC for rv64 platform.");
+    } elsif ($opt{sarg}) {
+      !system("cd $ENV{SARG_ROOT}/rtl/rv_plic/rtl && ./gen_plic_addrmap.py -t $num_targets -s $num_sources > plic_regmap.sv") or
+      die (" Error generating PLIC for rv64 platform.");
+    }
     print "done\n";
   }
 
@@ -2259,6 +2267,8 @@ sub assemble_diag
       if (!$opt{rv64_target_triple}) {
         if ($opt{ariane}) {
           $ENV{RV64_TARGET_TRIPLE} = "riscv64-unknown-elf" ;
+        } elsif ($opt{sarg}) {
+          $ENV{RV64_TARGET_TRIPLE} = "riscv64-unknown-elf" ;
         }
       } else {
         $ENV{RV64_TARGET_TRIPLE} = $opt{rv64_target_triple} ;
@@ -2266,12 +2276,17 @@ sub assemble_diag
       if (!$opt{rv64_march}) {
         if ($opt{ariane}) {
           $ENV{RV64_MARCH} = "rv64imafdc" ;
+        } elsif ($opt{sarg}) {
+          $ENV{RV64_MARCH} = "rv64imafd" ;
         }
       } else {
         $ENV{RV64_MARCH} = $opt{rv64_march} ;
       }
       if (!$opt{rv64_mabi}) {
         if ($opt{ariane}) {
+          $ENV{RV64_MABI} = "lp64d" ;
+        }
+        elsif ($opt{sarg}) {
           $ENV{RV64_MABI} = "lp64d" ;
         }
       } else {
@@ -2726,6 +2741,7 @@ sub parse_args
   $ENV{PITON_PICO}     = $opt{pico};
   $ENV{PITON_PICO_HET} = $opt{pico_het};
   $ENV{PITON_ARIANE}   = $opt{ariane};
+  $ENV{PITON_SARG}     = $opt{sarg};
   $ENV{PITON_RV64_PLATFORM}   = "1" if ($opt{rv64_platform});
   push (@{$opt{config_rtl}}, "PITON_PICO_HET") if ($opt{pico_het});
 
@@ -2759,6 +2775,8 @@ sub parse_args
         push (@{$opt{config_rtl}}, "RTL_PICO" . $i);
     } elsif ($opt{ariane}) {
         push (@{$opt{config_rtl}}, "RTL_ARIANE" . $i);
+    } elsif ($opt{sarg}) {
+        push (@{$opt{config_rtl}}, "RTL_SARG" . $i);
     } elsif ($opt{ost1}) {
         push (@{$opt{config_rtl}}, "RTL_SPARC" . $i);
     }

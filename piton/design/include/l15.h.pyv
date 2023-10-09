@@ -55,17 +55,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    import pyhplib
    from pyhplib import *
 
-   if 'PITON_ARIANE' in globals():
-       print("// this is used in the ariane SV packages to derive the parameterization")
-       print("`define CONFIG_L1D_CACHELINE_WIDTH %d"  % 128) # constant at the moment
-       print("`define CONFIG_L1I_CACHELINE_WIDTH %d"  % 256) # constant at the moment
-       print("`define CONFIG_L15_SIZE %d"             % CONFIG_L15_SIZE)
-       print("`define CONFIG_L1D_SIZE %d"             % CONFIG_L1D_SIZE)
-       print("`define CONFIG_L1I_SIZE %d"             % CONFIG_L1I_SIZE)
-       print("`define CONFIG_L15_ASSOCIATIVITY %d"    % CONFIG_L15_ASSOCIATIVITY)
-       print("`define CONFIG_L1D_ASSOCIATIVITY %d"    % CONFIG_L1D_ASSOCIATIVITY)
-       print("`define CONFIG_L1I_ASSOCIATIVITY %d"    % CONFIG_L1I_ASSOCIATIVITY)
-       print("\n\n")
+   print("// this is used in the ariane SV packages to derive the parameterization")
+   print("`define CONFIG_L1D_CACHELINE_WIDTH %d"  % 128) # constant at the moment
+   print("`define CONFIG_L1I_CACHELINE_WIDTH %d"  % 256) # constant at the moment
+   print("`define CONFIG_L15_SIZE %d"             % CONFIG_L15_SIZE)
+   print("`define CONFIG_L1D_SIZE %d"             % CONFIG_L1D_SIZE)
+   print("`define CONFIG_L1I_SIZE %d"             % CONFIG_L1I_SIZE)
+   print("`define CONFIG_L15_ASSOCIATIVITY %d"    % CONFIG_L15_ASSOCIATIVITY)
+   print("`define CONFIG_L1D_ASSOCIATIVITY %d"    % CONFIG_L1D_ASSOCIATIVITY)
+   print("`define CONFIG_L1I_ASSOCIATIVITY %d"    % CONFIG_L1I_ASSOCIATIVITY)
+   print("\n\n")
 
    # 512
    numentries = CONFIG_L15_SIZE / L15_LINE_SIZE
