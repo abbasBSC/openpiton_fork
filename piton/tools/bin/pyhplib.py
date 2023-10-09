@@ -137,6 +137,10 @@ if os.getenv("PITON_ARIANE") is not None:
     if int(os.getenv("PITON_ARIANE")):
         fileName = "devices_ariane.xml"
 
+if os.getenv("PITON_SARG") is not None:
+    if int(os.getenv("PITON_SARG")):
+        fileName = "devices_sarg.xml"
+
 DEVICES_XML_FILENAME = os.path.join(os.getenv("PROTOSYN_RUNTIME_DESIGN_PATH", ""),
                                     os.getenv("PROTOSYN_RUNTIME_BOARD", ""),
                                     fileName)
