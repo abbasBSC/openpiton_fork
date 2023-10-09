@@ -7,3 +7,7 @@
 [submodule "piton/design/chip/tile/ariane"]
 	path = piton/design/chip/tile/ariane
 	url = https://github.com/AileonN/cva6_openpiton_noliete.git
+[submodule "sargantana"]
+	path = piton/design/chip/tile/sargantana
+	url = https://gitlab.bsc.es/drac/drac-inorder.git
+	branch = ft/openpiton-hwdesign
