@@ -654,7 +654,7 @@ pico-amoxor     amoxor_w.S
     // note: these asm tests assume that the RISCV tests have been precompiled with the
     // correct environment
     <sarg_tile1_benchmarks>
-        <runargs -x_tiles=1 -y_tiles=1 -sarg -precompiled -asm_diag_root=/home/oscar/openpiton-HPDC/piton/design/chip/tile/sargantana/tmp/riscv-tests/build/benchmarks/ -rtl_timeout=10000000>
+        <runargs -x_tiles=1 -y_tiles=1 -sarg -precompiled -rtl_timeout=10000000>
             sarg-median       median.riscv
             sarg-multiply     multiply.riscv
             // sarg-pmp          pmp.riscv
@@ -671,7 +671,7 @@ pico-amoxor     amoxor_w.S
     // note: these asm tests assume that the RISCV tests have been precompiled with the
     // correct environment
     <sarg_tile1_mt_benchmarks>
-        <runargs -x_tiles=1 -y_tiles=1 -sarg -precompiled -asm_diag_root=/home/oscar/openpiton-HPDC/piton/design/chip/tile/sargantana/tmp/riscv-tests/build/benchmarks/ -rtl_timeout=10000000>
+        <runargs -x_tiles=1 -y_tiles=1 -sarg -precompiled -rtl_timeout=10000000>
             sarg-mt_axpy       mt-axpy.riscv
             sarg-mt_histogram  mt-histogram.riscv
             sarg-mt_matmul     mt-matmul.riscv
