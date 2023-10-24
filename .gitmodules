@@ -1,13 +1,10 @@
-[submodule "aws"]
-	path = piton/design/aws
-	url = https://github.com/PrincetonUniversity/openpiton-aws.git
 [submodule "piton/design/chipset/rv64_platform/bootrom/u-boot/uboot"]
 	path = piton/design/chipset/rv64_platform/bootrom/u-boot/uboot
 	url = git@github.com:u-boot/u-boot.git
 [submodule "piton/design/chip/tile/ariane"]
 	path = piton/design/chip/tile/ariane
 	url = https://github.com/AileonN/cva6_openpiton_noliete.git
-[submodule "sargantana"]
+[submodule "piton/design/chip/tile/sargantana"]
 	path = piton/design/chip/tile/sargantana
-	url = https://gitlab.bsc.es/drac/drac-inorder.git
+	url = ../../../../drac/drac-inorder.git
 	branch = ft/openpiton-hwdesign
