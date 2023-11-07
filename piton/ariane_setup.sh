@@ -49,10 +49,11 @@ echo
 
 echo "make sure that you source this script in a bash shell in the root folder of OpenPiton"
 
-if [ -z "$BASH" ] || [ ${0: -4} !=  "bash" ]
+if [ "$0" !=  "bash" ] && [ "$0" != "-bash" ]
 then
   echo "not in bash ($0), aborting"
   return
+
 fi
 
 SCRIPTNAME=ariane_setup.sh
@@ -75,19 +76,16 @@ export ARIANE_ROOT=${PITON_ROOT}/piton/design/chip/tile/ariane/
 ## GCC and RISCV GCC setup
 export CXX=g++ CC=gcc
 # customize this to a fast local disk
-
-if [ "$RISCV" ==  "" ]
-then
-  export RISCV=$HOME/scratch/riscv_install
-fi
-export VERILATOR_ROOT=$ARIANE_ROOT/tmp/verilator-4.014/
-
+export RISCV=~/scratch/`whoami`/riscv_install
+#export VERILATOR_ROOT=~/scratch/`whoami`/verilator_5_012/
+export VERILATOR_ROOT=~/scratch/`whoami`/verilator_4_104/
 # setup paths
 export PATH=$RISCV/bin:$VERILATOR_ROOT/bin:$PATH
 export LIBRARY_PATH=$RISCV/lib
-export LD_LIBRARY_PATH=$RISCV/lib
-export C_INCLUDE_PATH=$RISCV/include:$VERILATOR_ROOT/include
-export CPLUS_INCLUDE_PATH=$RISCV/include:$VERILATOR_ROOT/include
+export LD_LIBRARY_PATH=$RISCV/lib:$LD_LIBRARY_PATH
+export C_INCLUDE_PATH=$RISCV/include:$VERILATOR_ROOT/include:$C_INCLUDE_PATH
+export CPLUS_INCLUDE_PATH=$RISCV/include:$VERILATOR_ROOT/include:$CPLUS_INCLUDE_PATH
+export MODELSIM_HOME=$HOME/scratch/questa_install/questasim
 
 # source OpenPiton setup script
 # note: customize this script to reflect your tool setup

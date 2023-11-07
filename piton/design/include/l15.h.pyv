@@ -49,6 +49,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 `define L15_PADDR_WIDTH 40
 `define L15_PADDR_MASK 39:0
 
+//--------------------------------------------
+// MESI DEFINES
+//--------------------------------------------
+`define L15_MESI_STATE_WIDTH 2
+`define L15_MESI_STATE_I 2'd0
+`define L15_MESI_STATE_S 2'd1
+`define L15_MESI_STATE_E 2'd2
+`define L15_MESI_STATE_M 2'd3
+
+`define L15_MESI_TRANS_STATE_WIDTH 2
+`define L15_MESI_TRANSITION_STATE_SM 2'b01
+`define L15_MESI_TRANSITION_STATE_IM 2'b10
+`define L15_MESI_TRANSITION_STATE_WAIT_ACK 2'b11
+
+`define L15_SEQUENCE_ID_WIDTH `MSG_SUBLINE_ID_WIDTH
 
 <%
    import math
@@ -71,13 +86,23 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    numentries = CONFIG_L15_SIZE / L15_LINE_SIZE
    # 512
    print("`define L15_NUM_ENTRIES %d" % numentries)
+   L15_NUM_ENTRIES = numentries
    # 9
-   print("`define L15_NUM_ENTRIES_LOG2 %d" % int(math.log(numentries, 2)))
+   L15_NUM_ENTRIES_LOG2 = math.log(numentries, 2)
+   print("`define L15_NUM_ENTRIES_LOG2 %d" % L15_NUM_ENTRIES_LOG2)
    # 4
+   L15_WAY_COUNT = CONFIG_L15_ASSOCIATIVITY
    print("`define L15_WAY_COUNT %d" % CONFIG_L15_ASSOCIATIVITY)
    # 2
-   print("`define L15_WAY_WIDTH %d" % int(math.log(CONFIG_L15_ASSOCIATIVITY, 2)))
-
+   L15_WAY_COUNT_LOG2 = math.log(CONFIG_L15_ASSOCIATIVITY, 2)
+   print("`define L15_WAY_WIDTH %d" % L15_WAY_COUNT_LOG2)
+   #
+   L1D_WAY_COUNT_LOG2 = math.log(CONFIG_L1D_ASSOCIATIVITY, 2)
+   print("`define L1D_WAY_WIDTH %d" % L1D_WAY_COUNT_LOG2)
+   #
+   INVAL_ADDR_HI = math.log(CONFIG_L1D_SIZE/CONFIG_L1D_ASSOCIATIVITY, 2)
+   print("`define INVAL_ADDR_MASK %d+4:4" % INVAL_ADDR_HI)
+   	
    l15_set_count = numentries / CONFIG_L15_ASSOCIATIVITY
    l1d_set_count = CONFIG_L1D_SIZE / L15_LINE_SIZE / CONFIG_L1D_ASSOCIATIVITY
    if l15_set_count > l1d_set_count:
@@ -85,6 +110,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       print("`define L15_WMT_ALIAS_WIDTH %d" % int(math.log(l15_set_count/l1d_set_count, 2)))
 
    print("`define L15_CACHELINE_WIDTH %d" % (L15_LINE_SIZE*8))
+   print("`define L15_WRITE_BYTE_MASK_WIDTH %d" % (L15_LINE_SIZE))
+
+   # 7
+   print("`define L15_CACHE_INDEX_WIDTH %d" % (L15_NUM_ENTRIES_LOG2 - L15_WAY_COUNT_LOG2))
+   print("`define L15_CACHE_INDEX_VECTOR_WIDTH %d" % (L15_NUM_ENTRIES/CONFIG_L15_ASSOCIATIVITY))
+
+   # 4
+   print("`define L15_IDX_LOW %d" % math.log(L15_LINE_SIZE, 2))
 %>
 
 `define L15_MESI_STATE_WIDTH 2
@@ -101,32 +134,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 `define L15_WAY_MASK `L15_WAY_WIDTH-1:0
 `define L15_WAY_ARRAY_WIDTH `L15_WAY_COUNT
 `define L15_WAY_ARRAY_MASK `L15_WAY_COUNT-1:0
-`define L15_WAY_ARRAY_WAY0_MASK `L15_WAY_WIDTH'd0
-`define L15_WAY_ARRAY_WAY1_MASK `L15_WAY_WIDTH'd1
-`define L15_WAY_ARRAY_WAY2_MASK `L15_WAY_WIDTH'd2
-`define L15_WAY_ARRAY_WAY3_MASK `L15_WAY_WIDTH'd3
-`define L15_WAY_ARRAY_WAY4_MASK `L15_WAY_WIDTH'd4
-`define L15_WAY_ARRAY_WAY5_MASK `L15_WAY_WIDTH'd5
-`define L15_WAY_ARRAY_WAY6_MASK `L15_WAY_WIDTH'd6
-`define L15_WAY_ARRAY_WAY7_MASK `L15_WAY_WIDTH'd7
-`define L15_WAYID_WAY0 `L15_WAY_WIDTH'd0
-`define L15_WAYID_WAY1 `L15_WAY_WIDTH'd1
-`define L15_WAYID_WAY2 `L15_WAY_WIDTH'd2
-`define L15_WAYID_WAY3 `L15_WAY_WIDTH'd3
-`define L15_WAYID_WAY4 `L15_WAY_WIDTH'd4
-`define L15_WAYID_WAY5 `L15_WAY_WIDTH'd5
-`define L15_WAYID_WAY6 `L15_WAY_WIDTH'd6
-`define L15_WAYID_WAY7 `L15_WAY_WIDTH'd7
 
 // 7
-`define L15_NUM_4WAY_ENTRIES_LOG2 (`L15_NUM_ENTRIES_LOG2-2)
-// 7
-`define L15_CACHE_INDEX_WIDTH (`L15_NUM_4WAY_ENTRIES_LOG2)
+//`define L15_CACHE_INDEX_WIDTH (`L15_NUM_4WAY_ENTRIES_LOG2)
 `define L15_CACHE_INDEX_MASK `L15_CACHE_INDEX_WIDTH-1:0
-`define L15_CACHE_INDEX_VECTOR_WIDTH (`L15_NUM_ENTRIES/4)
+//`define L15_CACHE_INDEX_VECTOR_WIDTH (`L15_NUM_ENTRIES/4)
 
 // 16B cache lines
-`define L15_IDX_LOW 4
+//`define L15_IDX_LOW 4
 // 10
 `define L15_IDX_HI (`L15_CACHE_INDEX_WIDTH+`L15_IDX_LOW-1)
 
@@ -154,7 +169,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 `define L15_WMT_ALIAS_WIDTH 0
 `endif
 
-`define L15_WMT_DATA_WIDTH (`L15_WAY_WIDTH+`L15_WMT_ALIAS_WIDTH)
+`define L15_WMT_DATA_WIDTH (`L1D_WAY_WIDTH+`L15_WMT_ALIAS_WIDTH)
 `define L15_WMT_DATA_MASK `L15_WMT_DATA_WIDTH-1:0
 `define L15_WMT_VALID_MASK `L15_WMT_DATA_WIDTH
 `define L15_WMT_ENTRY_WIDTH (`L15_WMT_DATA_WIDTH+1)
@@ -183,10 +198,35 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // LRU array storage
 // keeps 6 bits per cache set: 4 "used" bits, 1 each cache line, and 2 bits for wayid round robin (4w)
-`define L15_LRUARRAY_WIDTH (`L15_WAY_WIDTH + `L15_WAY_ARRAY_WIDTH)
-`define L15_LRUARRAY_MASK (`L15_WAY_WIDTH + `L15_WAY_ARRAY_WIDTH)-1:0
-`define L15_LRUARRAY_USED_MASK `L15_WAY_ARRAY_MASK
-`define L15_LRUARRAY_RR_MASK `L15_WAY_ARRAY_WIDTH+`L15_WAY_WIDTH-1 -: `L15_WAY_WIDTH
+`define L15_LRUARRAY_WIDTH (`L15_WAY_WIDTH + `L15_WAY_COUNT)
+`define L15_LRUARRAY_MASK (`L15_WAY_WIDTH + `L15_WAY_COUNT)-1:0
+`define L15_LRUARRAY_USED_MASK `L15_WAY_COUNT-1:0
+`define L15_LRUARRAY_RR_MASK `L15_WAY_COUNT+`L15_WAY_WIDTH-1 -: `L15_WAY_WIDTH
+
+// MESI array
+`define L15_MESI_ARRAY_WIDTH `L15_MESI_STATE_WIDTH*`L15_WAY_COUNT
+
+// write buffer
+//`define L15_WRITE_BYTE_MASK_WIDTH `L15_LINE_SIZE/8
+
+//--------------------------------------------
+// NoC1 credit management
+//--------------------------------------------
+
+// careful, the noc1buffer module assumes these are power of two
+// also, please change the corresponding pyv value in noc1buffer.v.pyv
+
+`define NOC1_BUFFER_NUM_SLOTS 8
+`define NOC1_BUFFER_NUM_SLOTS_LOG 3
+`define NOC1_BUFFER_NUM_DATA_SLOTS 2
+`define NOC1_BUFFER_NUM_DATA_SLOTS_LOG 1
+
+`define NOC1_BUFFER_ACK_DATA_WIDTH 2
+`define NOC1_BUFFER_ACK_DATA_16B 2'd2
+`define NOC1_BUFFER_ACK_DATA_8B 2'd1
+
+`define NOC1_BUFFER_MAX_SLOT_WIDTH 4
+`define NOC1_BUFFER_REQUEST_WIDTH 2
 
 // source
 `define L15_PREDECODE_SOURCE_WIDTH 2
@@ -209,10 +249,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 `define L15_MSHR_ID_LD 2'd2
 `define L15_MSHR_ID_ST 2'd3
 
-`define L15_NUM_THREADS 2
-`define L15_THREADID_WIDTH 1
-`define L15_THREADID_MASK 0:0
-`define L15_THREAD_ARRAY_MASK 1:0
+// if NO_RTL_CSM is defined L15_NUM_THREADS could go up to 64, otherwise 32.
+<%
+   import math
+   import pyhplib
+   from pyhplib import *
+   print("`define L15_NUM_THREADS     %d" % L15_NUM_THREADS)
+   print("`define L15_THREADID_WIDTH  %d" % int(math.log(L15_NUM_THREADS, 2)))
+%>
+`define L15_THREADID_MASK `L15_THREADID_WIDTH-1:0
+`define L15_THREAD_ARRAY_MASK `L15_NUM_THREADS-1:0
 `define L15_NUM_MSHRID_PER_THREAD 4
 
 // pipeline OPs
@@ -351,7 +397,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 `define L15_CONTROL_ICACHE (`L15_CONTROL_ATOMIC + 1)
 `define L15_CONTROL_SIZE_3B (`L15_CONTROL_ICACHE + 3)
 `define L15_CONTROL_THREADID (`L15_CONTROL_SIZE_3B + `L15_THREADID_WIDTH)
-`define L15_CONTROL_L1_REPLACEMENT_WAY_2B (`L15_CONTROL_THREADID + `L15_WAY_WIDTH)
+`define L15_CONTROL_L1_REPLACEMENT_WAY_2B (`L15_CONTROL_THREADID + `L1D_WAY_WIDTH)
 `define L15_CONTROL_NC_1B (`L15_CONTROL_L1_REPLACEMENT_WAY_2B + 1)
 `define L15_CONTROL_BLOCKSTORE_1B (`L15_CONTROL_NC_1B + 1)
 `define L15_CONTROL_WIDTH (`L15_CONTROL_BLOCKSTORE_1B + 1)
@@ -363,20 +409,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 `define L15_REQ_WIDTH  (14 + 40 + 2*64 +      \
                         `PCX_REQTYPE_WIDTH  + \
                         `L15_THREADID_WIDTH + \
-                        `L15_WAY_WIDTH      + \
+                        `L1D_WAY_WIDTH      + \
                         `TLB_CSM_WIDTH + `L15_BYTE_MASK_WIDHT)
 `else
 // define the width of the flattened, native L15 interface, used for ARIANE_RV64 option
 `define L15_REQ_WIDTH  (14 + 40 + 2*64 +      \
                         `PCX_REQTYPE_WIDTH  + \
                         `L15_THREADID_WIDTH + \
-                        `L15_WAY_WIDTH      + \
+                        `L1D_WAY_WIDTH      + \
                         `TLB_CSM_WIDTH)
 `endif
 `define L15_RTRN_WIDTH (16 + 4*64 + \
                         `CPX_RESTYPE_WIDTH  +      \
                         `L15_THREADID_WIDTH +      \
-                        2 * `L15_WAY_WIDTH + `L15_PADDR_WIDTH)
+                        2 * `L1D_WAY_WIDTH + `L15_PADDR_WIDTH)
 
 `define L15_FETCH_STATE_WIDTH 3
 `define L15_FETCH_STATE_NORMAL 3'd0

@@ -57,11 +57,10 @@ module rf_l15_lrsc_flag(
    input wire [`L15_CACHE_INDEX_WIDTH-1:0] read_index,
 
    input wire write_valid,
-   input wire [`L15_CACHE_INDEX_WIDTH-1:0] write_index,
-   input wire [3:0] write_mask,
-   input wire [3:0] write_data,
-
-   output wire [3:0] read_data
+   input wire  [`L15_CACHE_INDEX_WIDTH-1:0] write_index,
+   input wire  [`L15_WAY_COUNT-1:0] write_mask,
+   input wire  [`L15_WAY_COUNT-1:0] write_data,
+   output wire [`L15_WAY_COUNT-1:0] read_data
    );
 
 <%
@@ -72,11 +71,11 @@ module rf_l15_lrsc_flag(
 // reg read_valid_f;
 reg [`L15_CACHE_INDEX_WIDTH-1:0] read_index_f;
 reg [`L15_CACHE_INDEX_WIDTH-1:0] write_index_f;
-reg [3:0] write_data_f;
-reg [3:0] write_mask_f;
+reg [`L15_WAY_COUNT-1:0] write_data_f;
+reg [`L15_WAY_COUNT-1:0] write_mask_f;
 reg write_valid_f;
 
-reg [3:0] regfile [0:`L15_CACHE_INDEX_VECTOR_WIDTH-1];
+reg [`L15_WAY_COUNT-1:0] regfile [0:`L15_CACHE_INDEX_VECTOR_WIDTH-1];
 
 always @ (posedge clk)
 begin
@@ -100,9 +99,9 @@ begin
    write_valid_f <= write_valid;
    if (write_valid)
    begin
-      write_data_f <= write_data;
+      write_data_f  <= write_data;
       write_index_f <= write_index;
-      write_mask_f <= write_mask;
+      write_mask_f  <= write_mask;
    end
 end
 
@@ -112,7 +111,7 @@ begin
    begin
       <%
          for i in range (numset):
-            print("regfile[%d] <= 4'b0;" % (i))
+            print("regfile[%d] <= {`L15_WAY_COUNT{1'b0}};" % (i))
       %>
       // regfile <= 1024'b0;
    end
