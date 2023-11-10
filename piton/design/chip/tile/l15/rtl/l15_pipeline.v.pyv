@@ -431,7 +431,7 @@ begin
     	mshr_st_state_array[i]      = mshr_pipe_st_state_s1[`L15_MESI_TRANS_STATE_WIDTH*(i+1) - 1 -: `L15_MESI_TRANS_STATE_WIDTH];
         mshr_st_address_array[i]    = mshr_pipe_st_address[`L15_PADDR_WIDTH*(i+1) - 1 -: `L15_PADDR_WIDTH];
         mshr_ld_address_array[i]    = mshr_pipe_ld_address[`L15_PADDR_WIDTH*(i+1) - 1 -: `L15_PADDR_WIDTH];
-        mshr_ifill_address_array[i] = mshr_pipe_ld_address[`L15_PADDR_WIDTH*(i+1) - 1 -: `L15_PADDR_WIDTH];
+        mshr_ifill_address_array[i] = mshr_pipe_ifill_address[`L15_PADDR_WIDTH*(i+1) - 1 -: `L15_PADDR_WIDTH];
         mshr_st_way_array[i]        = mshr_pipe_st_way_s1[`L15_WAY_WIDTH*(i+1) - 1 -: `L15_WAY_WIDTH]; 
      end
 end
