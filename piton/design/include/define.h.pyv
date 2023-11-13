@@ -61,6 +61,11 @@ print("`define PITON_Y_TILES %d"   % PITON_Y_TILES)
 
 // NoC interface
 
+`define PITON_NOC1_WIDTH  64
+`define PITON_NOC2_WIDTH  64
+`define PITON_NOC3_WIDTH  64
+
+
 `define NOC_DATA_WIDTH      `DATA_WIDTH
 `define NOC_CHIPID_WIDTH    `CHIP_ID_WIDTH
 `define NOC_CHIPID_OFFCHIP  13

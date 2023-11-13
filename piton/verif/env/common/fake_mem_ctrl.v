@@ -759,5 +759,20 @@ always @(posedge clk) begin
 end
 `endif // endif MINIMAL_MONITORING
 
+
+`ifdef VERILATOR
+   reg  [63:0] flit_o_cnts,flit_i_cnts;   
+   always @ (posedge clk) begin
+       if (!rst_n) begin
+           flit_o_cnts<=0;
+           flit_i_cnts<=0;
+       end else begin
+           if (noc_valid_in & noc_ready_in) flit_i_cnts <= flit_i_cnts + 1'b1; 
+           if (noc_valid_out & noc_ready_out) flit_o_cnts <= flit_o_cnts + 1'b1;
+       end
+   end
+`endif
+
+
 endmodule
 
