@@ -4,3 +4,7 @@
 [submodule "piton/design/chip/tile/ariane"]
 	path = piton/design/chip/tile/ariane
 	url = https://github.com/AileonN/cva6_openpiton_noliete.git
+[submodule "piton/tools/metro_mpi"]
+	path = piton/tools/metro_mpi
+	url = https://gitlab.bsc.es/hwdesign/fpga/third-party/bsc_metrompi
+	branch = abbas
