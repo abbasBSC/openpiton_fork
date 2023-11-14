@@ -83,8 +83,6 @@ reg                             async_mux;
 
 reg                             diag_done;
 
-reg                             diag_done;
-
 reg                             io_clk;
 reg                             jtag_clk;
 reg                             chipset_clk_osc_p;

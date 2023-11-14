@@ -201,7 +201,6 @@ def gen_riscv_dts(devices, nCpus, cpuFreq, timeBaseFreq, periphFreq, dtsPath, ti
     };
             ''' % (addrBase, _reg_fmt(addrBase, addrLen, 2, 2))
 
-
     # TODO: this needs to be extended
     # get the number of interrupt sources
     numIrqs = 0
@@ -220,6 +219,7 @@ def gen_riscv_dts(devices, nCpus, cpuFreq, timeBaseFreq, periphFreq, dtsPath, ti
             addrLen  = devices[i]["length"]
             tmpStr += '''
         clint@%08x {
+            u-boot,dm-pre-reloc;
             compatible = "riscv,clint0";
             interrupts-extended = <''' % (addrBase)
             for k in range(nCpus):
@@ -235,6 +235,7 @@ def gen_riscv_dts(devices, nCpus, cpuFreq, timeBaseFreq, periphFreq, dtsPath, ti
             addrLen  = devices[i]["length"]
             tmpStr += '''
         PLIC0: plic@%08x {
+            u-boot,dm-pre-reloc;
             #address-cells = <0>;
             #interrupt-cells = <1>;
             compatible = "riscv,plic0";
@@ -248,12 +249,15 @@ def gen_riscv_dts(devices, nCpus, cpuFreq, timeBaseFreq, periphFreq, dtsPath, ti
             riscv,ndev = <%d>;
         };
             ''' % (_reg_fmt(addrBase, addrLen, 2, 2), numIrqs)
+
         # UART
+        # TODO: update uart sequence numbers
         if devices[i]["name"] == "uart":
             addrBase = devices[i]["base"]
             addrLen  = devices[i]["length"]
             tmpStr += '''
-        uart@%08x {
+        uart0: uart@%08x {
+            u-boot,dm-pre-reloc;
             compatible = "ns16550";
             reg = <%s>;
             clock-frequency = <%d>;
@@ -264,6 +268,19 @@ def gen_riscv_dts(devices, nCpus, cpuFreq, timeBaseFreq, periphFreq, dtsPath, ti
         };
             ''' % (addrBase, _reg_fmt(addrBase, addrLen, 2, 2), periphFreq, ioDeviceNr)
             ioDeviceNr+=1
+
+        # sd card
+        if devices[i]["name"] == "sd":
+            addrBase = devices[i]["base"]
+            addrLen  = devices[i]["length"]
+            tmpStr += '''
+        sdhci_0: sdhci@%08x {
+            u-boot,dm-pre-reloc;
+            status = "okay";
+            compatible = "openpiton,piton-mmc";
+            reg = <%s>;
+        };
+            ''' %(addrBase, _reg_fmt(addrBase, addrLen, 2, 2))
 
         # Ethernet
         if devices[i]["name"] == "net":
@@ -304,6 +321,7 @@ def gen_riscv_dts(devices, nCpus, cpuFreq, timeBaseFreq, periphFreq, dtsPath, ti
     '''
 
     # this needs to match
+    assert ioDeviceNr-1 == numIrqs
 
     with open(dtsPath + '/rv64_platform.dts','w+') as file:
         file.write(tmpStr)
@@ -322,3 +340,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
