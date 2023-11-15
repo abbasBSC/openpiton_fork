@@ -1286,9 +1286,6 @@ sub pre_build
     if ($opt{ariane}) {
       !system("cd $ENV{ARIANE_ROOT}/corev_apu/rv_plic/rtl && ./gen_plic_addrmap.py -t $num_targets -s $num_sources > plic_regmap.sv") or
       die (" Error generating PLIC for rv64 platform.");
-    } elsif ($opt{sarg}) {
-      !system("cd $ENV{SARG_ROOT}/rtl/rv_plic/rtl && ./gen_plic_addrmap.py -t $num_targets -s $num_sources > plic_regmap.sv") or
-      die (" Error generating PLIC for rv64 platform.");
     }
     print "done\n";
   }

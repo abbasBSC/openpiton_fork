@@ -54,6 +54,10 @@ then
 else
 
   git submodule update --init --recursive piton/design/chip/tile/ariane
+  git submodule update --init --recursive piton/design/common/pulp-platform/axi
+  git submodule update --init --recursive piton/design/common/pulp-platform/common_cells
+  git submodule update --init --recursive piton/design/common/axi_utils
+  git submodule update --init --recursive piton/design/chipset/bsc_rv64_peripherals
 
   # parallel compilation
   export NUM_JOBS=4
