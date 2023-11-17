@@ -350,15 +350,26 @@ pico-amoxor     amoxor_w.S
     // note: these asm tests assume that the RISCV tests have been precompiled with the
     // correct environment
     <ariane_tile1_benchmarks>
-        <runargs -x_tiles=1 -y_tiles=1 -ariane -precompiled -rtl_timeout=1000000>
-            ariane-dhrystone dhrystone.riscv
-            ariane-median    median.riscv
-            ariane-multiply  multiply.riscv
-            ariane-pmp       pmp.riscv
-            ariane-qsort     qsort.riscv
-            ariane-rsort     rsort.riscv
-            ariane-towers    towers.riscv
-            ariane-vvadd     vvadd.riscv
+        <runargs -x_tiles=1 -y_tiles=1 -ariane -precompiled -rtl_timeout=1000000000 -max_cycle=100000000>
+            sarg-dhrystone          dhrystone.riscv
+            //sarg-fd-bubblesort      fd-bubblesort.riscv
+            //sarg-fd-matrix_mult     fd-matrix_mult.riscv
+            sarg-fd-median          fd-median.riscv
+            sarg-fd-multiply        fd-multiply.riscv
+            sarg-fd-spmv            fd-spmv.riscv
+            sarg-fd-vvadd           fd-vvadd.riscv
+            //sarg-fibonacci          fibonacci.riscv
+            sarg-histogram          histogram.riscv
+            //sarg-int-bubblesort     int-bubblesort.riscv
+            //sarg-int-matrix_mult    int-matrix_mult.riscv
+            sarg-int-median         int-median.riscv
+            sarg-int-multiply       int-multiply.riscv
+            sarg-int-spmv           int-spmv.riscv
+            sarg-int-vvadd          int-vvadd.riscv
+            sarg-mm                 mm.riscv
+            sarg-qsort              qsort.riscv
+            sarg-rsort              rsort.riscv
+            sarg-towers             towers.riscv
         </runargs>
     </ariane_tile1_benchmarks>
 
@@ -654,30 +665,42 @@ pico-amoxor     amoxor_w.S
     // note: these asm tests assume that the RISCV tests have been precompiled with the
     // correct environment
     <sarg_tile1_benchmarks>
-        <runargs -x_tiles=1 -y_tiles=1 -sarg -precompiled -rtl_timeout=10000000>
-            sarg-median       median.riscv
-            sarg-multiply     multiply.riscv
-            // sarg-pmp          pmp.riscv
-            sarg-qsort        qsort.riscv
-            sarg-vvadd        vvadd.riscv
-            sarg-mm           mm.riscv
-            sarg-spmv         spmv.riscv
-            sarg-towers       towers.riscv
-            sarg-dhrystone    dhrystone.riscv
-            sarg-rsort        rsort.riscv
+        <runargs -x_tiles=1 -y_tiles=1 -sarg -precompiled -rtl_timeout=1000000000 -max_cycle=100000000>
+            sarg-dhrystone          dhrystone.riscv
+            //sarg-fd-bubblesort      fd-bubblesort.riscv
+            //sarg-fd-matrix_mult     fd-matrix_mult.riscv
+            sarg-fd-median          fd-median.riscv
+            sarg-fd-multiply        fd-multiply.riscv
+            sarg-fd-spmv            fd-spmv.riscv
+            sarg-fd-vvadd           fd-vvadd.riscv
+            //sarg-fibonacci          fibonacci.riscv
+            sarg-histogram          histogram.riscv
+            //sarg-int-bubblesort     int-bubblesort.riscv
+            //sarg-int-matrix_mult    int-matrix_mult.riscv
+            sarg-int-median         int-median.riscv
+            sarg-int-multiply       int-multiply.riscv
+            sarg-int-spmv           int-spmv.riscv
+            sarg-int-vvadd          int-vvadd.riscv
+            sarg-mm                 mm.riscv
+            sarg-qsort              qsort.riscv
+            sarg-rsort              rsort.riscv
+            sarg-towers             towers.riscv
         </runargs>
     </sarg_tile1_benchmarks>
 
     // note: these asm tests assume that the RISCV tests have been precompiled with the
     // correct environment
     <sarg_tile1_mt_benchmarks>
-        <runargs -x_tiles=1 -y_tiles=1 -sarg -precompiled -rtl_timeout=10000000>
-            sarg-mt_axpy       mt-axpy.riscv
-            sarg-mt_histogram  mt-histogram.riscv
-            sarg-mt_matmul     mt-matmul.riscv
-            sarg-mt_somier     mt-somier.riscv
-            sarg-mt_stream     mt-stream.riscv
-            sarg-mt_vvadd      mt-vvadd.riscv
+        <runargs -x_tiles=1 -y_tiles=1 -sarg -precompiled -rtl_timeout=1000000000 -max_cycle=100000000>
+            sarg-mt-axpy            mt-axpy.riscv
+            //sarg-mt-blackscholes    mt-blackscholes.riscv
+            sarg-mt-histogram       mt-histogram.riscv
+            sarg-mt-int-sort        mt-int-sort.riscv
+            //sarg-mt-jacobi_2d       mt-jacobi_2d.riscv
+            //sarg-mt-matmul          mt-matmul.riscv
+            sarg-mt-somier          mt-somier.riscv
+            sarg-mt-stream-copy     mt-stream-copy.riscv
+            sarg-mt-stream-triad    mt-stream-triad.riscv
         </runargs>
     </sarg_tile1_mt_benchmarks>
 

@@ -40,6 +40,7 @@
 #          valgrind \
 #          csh
 
+CI_TOKEN=$1
 
 echo
 echo "----------------------------------------------------------------------"
@@ -61,19 +62,26 @@ else
 
   # not all tools are required at the moment
   ci/make-tmp.sh
-  ci/build-riscv-gcc.sh
-  ci/install-fesvr.sh
+  #ci/build-riscv-gcc.sh
+  #ci/install-fesvr.sh
   # ci/build-riscv-tests.sh
   # ci/install-dtc.sh
-  ci/install-spike.sh
+  #ci/install-spike.sh
   # ci/get-torture.sh
-  ci/install-verilator.sh
+  #ci/install-verilator.sh
 
   # build the RISCV tests if necessary
-  VERSION="7cc76ea83b4f827596158c8ba0763e93da65de8f"
+  VERSION="ft/configurable-uart-addr"
   cd tmp
 
-  [ -d riscv-tests ] || git clone https://github.com/riscv/riscv-tests.git
+  TESTS_URL="https://gitlab.bsc.es/hwdesign/rtl/uncore/riscv-tests.git"
+
+  if [[ $# -eq 1 ]]; then
+    echo "Using GitLab CI Token"
+    TESTS_URL=$(echo $TESTS_URL | sed "s/https:\/\//https:\/\/gitlab-ci-token:$CI_TOKEN@/")
+  fi
+
+  [ -d riscv-tests ] || git clone $TESTS_URL
   cd riscv-tests
   git checkout $VERSION
   git submodule update --init --recursive
@@ -81,11 +89,11 @@ else
   mkdir -p build
 
   # link in adapted syscalls.c such that the benchmarks can be used in the OpenPiton TB
-  cd benchmarks/common/
-  rm syscalls.c util.h
-  ln -s ${PITON_ROOT}/piton/verif/diag/assembly/include/riscv/ariane/syscalls.c
-  ln -s ${PITON_ROOT}/piton/verif/diag/assembly/include/riscv/ariane/util.h
-  cd -
+  #cd benchmarks/common/
+  #rm syscalls.c util.h
+  #ln -s ${PITON_ROOT}/piton/verif/diag/assembly/include/riscv/ariane/syscalls.c
+  #ln -s ${PITON_ROOT}/piton/verif/diag/assembly/include/riscv/ariane/util.h
+  #cd -
 
   cd build
   tmp_dest=$ARIANE_ROOT/tmp

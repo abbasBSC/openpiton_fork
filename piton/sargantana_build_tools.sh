@@ -31,6 +31,7 @@
 #          valgrind \
 #          csh
 
+CI_TOKEN=$1
 
 echo
 echo "----------------------------------------------------------------------"
@@ -51,11 +52,18 @@ else
   cd ${SARG_ROOT}
 
   # build the RISCV tests if necessary
-  VERSION="7cc76ea83b4f827596158c8ba0763e93da65de8f"
+  VERSION="ft/configurable-uart-addr"
   mkdir -p ${SARG_ROOT}/tmp
   cd tmp
 
-  [ -d riscv-tests ] || git clone https://github.com/riscv/riscv-tests.git
+  TESTS_URL="https://gitlab.bsc.es/hwdesign/rtl/uncore/riscv-tests.git"
+
+  if [[ $# -eq 1 ]]; then
+    echo "Using GitLab CI Token"
+    TESTS_URL=$(echo $TESTS_URL | sed "s/https:\/\//https:\/\/gitlab-ci-token:$CI_TOKEN@/")
+  fi
+
+  [ -d riscv-tests ] || git clone $TESTS_URL
   cd riscv-tests
   git checkout $VERSION
   git submodule update --init --recursive
@@ -63,11 +71,11 @@ else
   mkdir -p build
 
   # link in adapted syscalls.c such that the benchmarks can be used in the OpenPiton TB
-  cd benchmarks/common/
-  rm syscalls.c util.h
-  ln -s ${PITON_ROOT}/piton/verif/diag/assembly/include/riscv/sargantana/syscalls.c
-  ln -s ${PITON_ROOT}/piton/verif/diag/assembly/include/riscv/sargantana/util.h
-  cd -
+  #cd benchmarks/common/
+  #rm syscalls.c util.h
+  #ln -s ${PITON_ROOT}/piton/verif/diag/assembly/include/riscv/sargantana/syscalls.c
+  #ln -s ${PITON_ROOT}/piton/verif/diag/assembly/include/riscv/sargantana/util.h
+  #cd -
 
   cd build
   tmp_dest=$SARG_ROOT/tmp
@@ -79,7 +87,7 @@ else
 
   make clean
   make isa        -j${NUM_JOBS} > /dev/null
-  NUM_TILES=1 make benchmarks -j${NUM_JOBS} > /dev/null
+  NUM_TILES=1 SIMULATION_UART_ADDR=0x0040420000ULL make benchmarks -j${NUM_JOBS} > /dev/null
   make install
   cd ${PITON_ROOT}
 
