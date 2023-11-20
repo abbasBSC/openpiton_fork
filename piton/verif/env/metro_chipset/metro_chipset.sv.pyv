@@ -361,6 +361,15 @@ initial begin
  $display("\tNOC2 Width:%d",`PITON_NOC2_WIDTH);
  $display("\tNOC3 Width:%d",`PITON_NOC3_WIDTH);
  
+ $display("L15 MSHR Configuration:");
+ $display("\tL15 MSHR ID nums:%d",`L15_NUM_THREADS);
+ $display("L1D Cache Configuration:");
+ `ifndef PITON_ARIANE_HPDC
+    $display("L1D Cache Default");
+ `else
+    $display("HPDC");
+ `endif
+    
 `ifdef PITON_NO_CHIP_BRIDGE
     $display("**Warning: Chip Bridge Disable"); 
     $display("\t     Only one clock is used in the system"); 
