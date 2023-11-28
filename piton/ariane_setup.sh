@@ -82,6 +82,7 @@ export VERILATOR_ROOT=~/scratch/`whoami`/verilator_4_104/
 # setup paths
 export PATH=$RISCV/bin:$VERILATOR_ROOT/bin:$PATH
 export LIBRARY_PATH=$RISCV/lib
+
 export LD_LIBRARY_PATH=$RISCV/lib:$LD_LIBRARY_PATH
 export C_INCLUDE_PATH=$RISCV/include:$VERILATOR_ROOT/include:$C_INCLUDE_PATH
 export CPLUS_INCLUDE_PATH=$RISCV/include:$VERILATOR_ROOT/include:$CPLUS_INCLUDE_PATH

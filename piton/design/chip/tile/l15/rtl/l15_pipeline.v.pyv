@@ -434,6 +434,7 @@ begin
         mshr_ifill_address_array[i] = mshr_pipe_ifill_address[`L15_PADDR_WIDTH*(i+1) - 1 -: `L15_PADDR_WIDTH];
         mshr_st_way_array[i]        = mshr_pipe_st_way_s1[`L15_WAY_WIDTH*(i+1) - 1 -: `L15_WAY_WIDTH]; 
      end
+
 end
 
 // match pcx address to special accesses

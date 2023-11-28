@@ -350,15 +350,26 @@ pico-amoxor     amoxor_w.S
     // note: these asm tests assume that the RISCV tests have been precompiled with the
     // correct environment
     <ariane_tile1_benchmarks>
-        <runargs -x_tiles=1 -y_tiles=1 -ariane -precompiled -rtl_timeout=1000000>
-            ariane-dhrystone dhrystone.riscv
-            ariane-median    median.riscv
-            ariane-multiply  multiply.riscv
-            ariane-pmp       pmp.riscv
-            ariane-qsort     qsort.riscv
-            ariane-rsort     rsort.riscv
-            ariane-towers    towers.riscv
-            ariane-vvadd     vvadd.riscv
+        <runargs -x_tiles=1 -y_tiles=1 -ariane -precompiled -rtl_timeout=1000000000 -max_cycle=100000000>
+            sarg-dhrystone          dhrystone.riscv
+            //sarg-fd-bubblesort      fd-bubblesort.riscv
+            //sarg-fd-matrix_mult     fd-matrix_mult.riscv
+            sarg-fd-median          fd-median.riscv
+            sarg-fd-multiply        fd-multiply.riscv
+            sarg-fd-spmv            fd-spmv.riscv
+            sarg-fd-vvadd           fd-vvadd.riscv
+            //sarg-fibonacci          fibonacci.riscv
+            sarg-histogram          histogram.riscv
+            //sarg-int-bubblesort     int-bubblesort.riscv
+            //sarg-int-matrix_mult    int-matrix_mult.riscv
+            sarg-int-median         int-median.riscv
+            sarg-int-multiply       int-multiply.riscv
+            sarg-int-spmv           int-spmv.riscv
+            sarg-int-vvadd          int-vvadd.riscv
+            sarg-mm                 mm.riscv
+            sarg-qsort              qsort.riscv
+            sarg-rsort              rsort.riscv
+            sarg-towers             towers.riscv
         </runargs>
     </ariane_tile1_benchmarks>
 
@@ -383,7 +394,326 @@ pico-amoxor     amoxor_w.S
     </cmp_default>
 </ariane_tile16>
 
+<sarg_tile1 sys=manycore -x_tiles=1 -y_tiles=1 -sarg>
+<cmp_default name=default>
+    // note: these asm tests assume that the RISCV tests have been precompiled with the
+    // correct environment
+    <sarg_tile1_asm_tests_p>
+        <runargs -x_tiles=1 -y_tiles=1 -sarg -precompiled>
+        sarg-rv64ui-p-add       rv64ui-p-add.S
+        sarg-rv64ui-p-addi      rv64ui-p-addi.S
+        sarg-rv64ui-p-slli      rv64ui-p-slli.S
+        sarg-rv64ui-p-addiw     rv64ui-p-addiw.S
+        sarg-rv64ui-p-addw      rv64ui-p-addw.S
+        sarg-rv64ui-p-and       rv64ui-p-and.S
+        sarg-rv64ui-p-auipc     rv64ui-p-auipc.S
+        sarg-rv64ui-p-beq       rv64ui-p-beq.S
+        sarg-rv64ui-p-bge       rv64ui-p-bge.S
+        sarg-rv64ui-p-bgeu      rv64ui-p-bgeu.S
+        sarg-rv64ui-p-andi      rv64ui-p-andi.S
+        sarg-rv64ui-p-blt       rv64ui-p-blt.S
+        sarg-rv64ui-p-bltu      rv64ui-p-bltu.S
+        sarg-rv64ui-p-bne       rv64ui-p-bne.S
+        // sarg-rv64ui-p-simple    rv64ui-p-simple.S
+        sarg-rv64ui-p-jal       rv64ui-p-jal.S
+        sarg-rv64ui-p-jalr      rv64ui-p-jalr.S
+        sarg-rv64ui-p-or        rv64ui-p-or.S
+        sarg-rv64ui-p-ori       rv64ui-p-ori.S
+        sarg-rv64ui-p-sub       rv64ui-p-sub.S
+        sarg-rv64ui-p-subw      rv64ui-p-subw.S
+        sarg-rv64ui-p-xor       rv64ui-p-xor.S
+        sarg-rv64ui-p-xori      rv64ui-p-xori.S
+        sarg-rv64ui-p-slliw     rv64ui-p-slliw.S
+        sarg-rv64ui-p-sll       rv64ui-p-sll.S
+        sarg-rv64ui-p-sllw      rv64ui-p-sllw.S
+        sarg-rv64ui-p-slt       rv64ui-p-slt.S
+        sarg-rv64ui-p-slti      rv64ui-p-slti.S
+        sarg-rv64ui-p-sltiu     rv64ui-p-sltiu.S
+        sarg-rv64ui-p-sltu      rv64ui-p-sltu.S
+        sarg-rv64ui-p-sra       rv64ui-p-sra.S
+        sarg-rv64ui-p-srai      rv64ui-p-srai.S
+        sarg-rv64ui-p-sraiw     rv64ui-p-sraiw.S
+        sarg-rv64ui-p-sraw      rv64ui-p-sraw.S
+        sarg-rv64ui-p-srl       rv64ui-p-srl.S
+        sarg-rv64ui-p-srli      rv64ui-p-srli.S
+        sarg-rv64ui-p-srliw     rv64ui-p-srliw.S
+        sarg-rv64ui-p-srlw      rv64ui-p-srlw.S
+        sarg-rv64ui-p-sb        rv64ui-p-sb.S
+        sarg-rv64ui-p-sd        rv64ui-p-sd.S
+        sarg-rv64ui-p-sh        rv64ui-p-sh.S
+        sarg-rv64ui-p-sw        rv64ui-p-sw.S
+        sarg-rv64ui-p-lb        rv64ui-p-lb.S
+        sarg-rv64ui-p-lbu       rv64ui-p-lbu.S
+        sarg-rv64ui-p-ld        rv64ui-p-ld.S
+        sarg-rv64ui-p-lh        rv64ui-p-lh.S
+        sarg-rv64ui-p-lhu       rv64ui-p-lhu.S
+        sarg-rv64ui-p-lui       rv64ui-p-lui.S
+        sarg-rv64ui-p-lw        rv64ui-p-lw.S
+        sarg-rv64ui-p-lwu       rv64ui-p-lwu.S
+        // sarg-rv64mi-p-csr       rv64mi-p-csr.S
+        sarg-rv64mi-p-mcsr      rv64mi-p-mcsr.S
+        sarg-rv64mi-p-illegal   rv64mi-p-illegal.S
+        sarg-rv64mi-p-ma_addr   rv64mi-p-ma_addr.S
+        sarg-rv64mi-p-ma_fetch  rv64mi-p-ma_fetch.S
+        sarg-rv64mi-p-sbreak    rv64mi-p-sbreak.S
+        // sarg-rv64mi-p-scall     rv64mi-p-scall.S
+        // sarg-rv64si-p-csr       rv64si-p-csr.S
+        sarg-rv64si-p-ma_fetch  rv64si-p-ma_fetch.S
+        sarg-rv64si-p-scall     rv64si-p-scall.S
+        // sarg-rv64si-p-wfi       rv64si-p-wfi.S
+        sarg-rv64si-p-sbreak    rv64si-p-sbreak.S
+        sarg-rv64si-p-dirty     rv64si-p-dirty.S
+        // sarg-rv64uc-p-rvc       rv64uc-p-rvc.S
+        sarg-rv64um-p-mul       rv64um-p-mul.S
+        sarg-rv64um-p-mulh      rv64um-p-mulh.S
+        sarg-rv64um-p-mulhsu    rv64um-p-mulhsu.S
+        sarg-rv64um-p-mulhu     rv64um-p-mulhu.S
+        sarg-rv64um-p-div       rv64um-p-div.S
+        sarg-rv64um-p-divu      rv64um-p-divu.S
+        sarg-rv64um-p-rem       rv64um-p-rem.S
+        sarg-rv64um-p-remu      rv64um-p-remu.S
+        sarg-rv64um-p-mulw      rv64um-p-mulw.S
+        sarg-rv64um-p-divw      rv64um-p-divw.S
+        sarg-rv64um-p-divuw     rv64um-p-divuw.S
+        sarg-rv64um-p-remw      rv64um-p-remw.S
+        sarg-rv64um-p-remuw     rv64um-p-remuw.S
+        </runargs>
+    </sarg_tile1_asm_tests_p>
 
+    // note: these asm tests assume that the RISCV tests have been precompiled with the
+    // correct environment
+    <sarg_tile1_asm_tests_v>
+        // note: we have to offset the trap here since the core operates in VM
+        <runargs -x_tiles=1 -y_tiles=1 -sarg -precompiled -trap_offset=0x80000000 -rtl_timeout=100000000>
+        sarg-rv64ui-v-add       rv64ui-v-add.S
+        sarg-rv64ui-v-addi      rv64ui-v-addi.S
+        sarg-rv64ui-v-addiw     rv64ui-v-addiw.S
+        sarg-rv64ui-v-addw      rv64ui-v-addw.S
+        sarg-rv64ui-v-and       rv64ui-v-and.S
+        sarg-rv64ui-v-auipc     rv64ui-v-auipc.S
+        sarg-rv64ui-v-beq       rv64ui-v-beq.S
+        sarg-rv64ui-v-bge       rv64ui-v-bge.S
+        sarg-rv64ui-v-bgeu      rv64ui-v-bgeu.S
+        sarg-rv64ui-v-andi      rv64ui-v-andi.S
+        sarg-rv64ui-v-blt       rv64ui-v-blt.S
+        sarg-rv64ui-v-bltu      rv64ui-v-bltu.S
+        sarg-rv64ui-v-bne       rv64ui-v-bne.S
+        // sarg-rv64ui-v-simple    rv64ui-v-simple.S
+        sarg-rv64ui-v-jal       rv64ui-v-jal.S
+        sarg-rv64ui-v-jalr      rv64ui-v-jalr.S
+        sarg-rv64ui-v-or        rv64ui-v-or.S
+        sarg-rv64ui-v-ori       rv64ui-v-ori.S
+        sarg-rv64ui-v-sub       rv64ui-v-sub.S
+        sarg-rv64ui-v-subw      rv64ui-v-subw.S
+        sarg-rv64ui-v-xor       rv64ui-v-xor.S
+        sarg-rv64ui-v-xori      rv64ui-v-xori.S
+        sarg-rv64ui-v-sll       rv64ui-v-sll.S
+        sarg-rv64ui-v-slli      rv64ui-v-slli.S
+        sarg-rv64ui-v-slliw     rv64ui-v-slliw.S
+        sarg-rv64ui-v-slt       rv64ui-v-slt.S
+        sarg-rv64ui-v-slti      rv64ui-v-slti.S
+        sarg-rv64ui-v-sltiu     rv64ui-v-sltiu.S
+        sarg-rv64ui-v-sltu      rv64ui-v-sltu.S
+        sarg-rv64ui-v-sra       rv64ui-v-sra.S
+        sarg-rv64ui-v-srai      rv64ui-v-srai.S
+        sarg-rv64ui-v-sraiw     rv64ui-v-sraiw.S
+        sarg-rv64ui-v-sraw      rv64ui-v-sraw.S
+        sarg-rv64ui-v-srl       rv64ui-v-srl.S
+        sarg-rv64ui-v-srli      rv64ui-v-srli.S
+        sarg-rv64ui-v-srliw     rv64ui-v-srliw.S
+        sarg-rv64ui-v-srlw      rv64ui-v-srlw.S
+        sarg-rv64ui-v-sb        rv64ui-v-sb.S
+        sarg-rv64ui-v-sd        rv64ui-v-sd.S
+        sarg-rv64ui-v-sh        rv64ui-v-sh.S
+        sarg-rv64ui-v-sw        rv64ui-v-sw.S
+        sarg-rv64ui-v-lb        rv64ui-v-lb.S
+        sarg-rv64ui-v-lbu       rv64ui-v-lbu.S
+        sarg-rv64ui-v-ld        rv64ui-v-ld.S
+        sarg-rv64ui-v-lh        rv64ui-v-lh.S
+        sarg-rv64ui-v-lhu       rv64ui-v-lhu.S
+        sarg-rv64ui-v-lui       rv64ui-v-lui.S
+        sarg-rv64um-v-mul       rv64um-v-mul.S
+        sarg-rv64um-v-mulh      rv64um-v-mulh.S
+        sarg-rv64um-v-mulhsu    rv64um-v-mulhsu.S
+        sarg-rv64um-v-mulhu     rv64um-v-mulhu.S
+        sarg-rv64um-v-div       rv64um-v-div.S
+        sarg-rv64um-v-divu      rv64um-v-divu.S
+        sarg-rv64um-v-rem       rv64um-v-rem.S
+        sarg-rv64um-v-remu      rv64um-v-remu.S
+        sarg-rv64um-v-mulw      rv64um-v-mulw.S
+        sarg-rv64um-v-divw      rv64um-v-divw.S
+        sarg-rv64um-v-divuw     rv64um-v-divuw.S
+        sarg-rv64um-v-remw      rv64um-v-remw.S
+        sarg-rv64um-v-remuw     rv64um-v-remuw.S
+        </runargs>
+    </sarg_tile1_asm_tests_v>
+
+    // note: these asm tests assume that the RISCV tests have been precompiled with the
+    // correct environment
+    <sarg_tile1_amo_tests_p>
+        <runargs -x_tiles=1 -y_tiles=1 -sarg -precompiled -rtl_timeout=1000000>
+        sarg-rv64ua-p-amoadd_d  rv64ua-p-amoadd_d.S
+        sarg-rv64ua-p-amoadd_w  rv64ua-p-amoadd_w.S
+        sarg-rv64ua-p-amoor_d   rv64ua-p-amoor_d.S
+        sarg-rv64ua-p-amoor_w   rv64ua-p-amoor_w.S
+        sarg-rv64ua-p-amoand_d  rv64ua-p-amoand_d.S
+        sarg-rv64ua-p-amoand_w  rv64ua-p-amoand_w.S
+        sarg-rv64ua-p-amoswap_d rv64ua-p-amoswap_d.S
+        sarg-rv64ua-p-amoswap_w rv64ua-p-amoswap_w.S
+        sarg-rv64ua-p-amoxor_d  rv64ua-p-amoxor_d.S
+        sarg-rv64ua-p-amoxor_w  rv64ua-p-amoxor_w.S
+        sarg-rv64ua-p-amomax_d  rv64ua-p-amomax_d.S
+        sarg-rv64ua-p-amomaxu_d rv64ua-p-amomaxu_d.S
+        sarg-rv64ua-p-amomaxu_w rv64ua-p-amomaxu_w.S
+        sarg-rv64ua-p-amomax_w  rv64ua-p-amomax_w.S
+        sarg-rv64ua-p-amomin_d  rv64ua-p-amomin_d.S
+        sarg-rv64ua-p-amomin_w  rv64ua-p-amomin_w.S
+        sarg-rv64ua-p-amominu_d rv64ua-p-amominu_d.S
+        sarg-rv64ua-p-amominu_w rv64ua-p-amominu_w.S
+        sarg-rv64ua-p-lrsc      rv64ua-p-lrsc.S
+        </runargs>
+    </sarg_tile1_amo_tests_p>
+
+    // note: these asm tests assume that the RISCV tests have been precompiled with the
+    // correct environment
+    <sarg_tile1_amo_tests_v>
+        // note: we have to offset the trap here since the core operates in VM
+        <runargs -x_tiles=1 -y_tiles=1 -sarg -precompiled -trap_offset=0x80000000 -rtl_timeout=1000000>
+        sarg-rv64ua-v-amoadd_d  rv64ua-v-amoadd_d.S
+        sarg-rv64ua-v-amoadd_w  rv64ua-v-amoadd_w.S
+        sarg-rv64ua-v-amoor_d   rv64ua-v-amoor_d.S
+        sarg-rv64ua-v-amoor_w   rv64ua-v-amoor_w.S
+        sarg-rv64ua-v-amoand_d  rv64ua-v-amoand_d.S
+        sarg-rv64ua-v-amoand_w  rv64ua-v-amoand_w.S
+        sarg-rv64ua-v-amoswap_d rv64ua-v-amoswap_d.S
+        sarg-rv64ua-v-amoswap_w rv64ua-v-amoswap_w.S
+        sarg-rv64ua-v-amoxor_d  rv64ua-v-amoxor_d.S
+        sarg-rv64ua-v-amoxor_w  rv64ua-v-amoxor_w.S
+        sarg-rv64ua-v-amomax_d  rv64ua-v-amomax_d.S
+        sarg-rv64ua-v-amomaxu_d rv64ua-v-amomaxu_d.S
+        sarg-rv64ua-v-amomaxu_w rv64ua-v-amomaxu_w.S
+        sarg-rv64ua-v-amomax_w  rv64ua-v-amomax_w.S
+        sarg-rv64ua-v-amomin_d  rv64ua-v-amomin_d.S
+        sarg-rv64ua-v-amomin_w  rv64ua-v-amomin_w.S
+        sarg-rv64ua-v-amominu_d rv64ua-v-amominu_d.S
+        sarg-rv64ua-v-amominu_w rv64ua-v-amominu_w.S
+        sarg-rv64ua-v-lrsc      rv64ua-v-lrsc.S
+        </runargs>
+    </sarg_tile1_amo_tests_v>
+
+    // note: these asm tests assume that the RISCV tests have been precompiled with the
+    // correct environment
+    <sarg_tile1_fp_tests_p>
+        <runargs -x_tiles=1 -y_tiles=1 -sarg -precompiled -rtl_timeout=1000000>
+        sarg-rv64uf-p-fadd       rv64uf-p-fadd.S
+        sarg-rv64uf-p-fclass     rv64uf-p-fclass.S
+        sarg-rv64uf-p-fcmp       rv64uf-p-fcmp.S
+        sarg-rv64uf-p-fcvt       rv64uf-p-fcvt.S
+        sarg-rv64uf-p-fcvt_w     rv64uf-p-fcvt_w.S
+        sarg-rv64uf-p-fdiv       rv64uf-p-fdiv.S
+        sarg-rv64uf-p-fmadd      rv64uf-p-fmadd.S
+        sarg-rv64uf-p-fmin       rv64uf-p-fmin.S
+        sarg-rv64uf-p-ldst       rv64uf-p-ldst.S
+        sarg-rv64uf-p-move       rv64uf-p-move.S
+        sarg-rv64uf-p-recoding   rv64uf-p-recoding.S
+        sarg-rv64ud-p-fadd       rv64ud-p-fadd.S
+        sarg-rv64ud-p-fclass     rv64ud-p-fclass.S
+        sarg-rv64ud-p-fcmp       rv64ud-p-fcmp.S
+        sarg-rv64ud-p-fcvt       rv64ud-p-fcvt.S
+        sarg-rv64ud-p-fcvt_w     rv64ud-p-fcvt_w.S
+        sarg-rv64ud-p-fdiv       rv64ud-p-fdiv.S
+        sarg-rv64ud-p-fmadd      rv64ud-p-fmadd.S
+        sarg-rv64ud-p-fmin       rv64ud-p-fmin.S
+        sarg-rv64ud-p-ldst       rv64ud-p-ldst.S
+        sarg-rv64ud-p-move       rv64ud-p-move.S
+        sarg-rv64ud-p-recoding   rv64ud-p-recoding.S
+        // sarg-rv64ud-p-structural rv64ud-p-structural.S
+        </runargs>
+    </sarg_tile1_fp_tests_p>
+
+    // note: these asm tests assume that the RISCV tests have been precompiled with the
+    // correct environment
+    <sarg_tile1_fp_tests_v>
+        // note: we have to offset the trap here since the core operates in VM
+        <runargs -x_tiles=1 -y_tiles=1 -sarg -precompiled -trap_offset=0x80000000 -rtl_timeout=1000000>
+        sarg-rv64uf-v-fadd       rv64uf-v-fadd.S
+        sarg-rv64uf-v-fclass     rv64uf-v-fclass.S
+        sarg-rv64uf-v-fcmp       rv64uf-v-fcmp.S
+        sarg-rv64uf-v-fcvt       rv64uf-v-fcvt.S
+        sarg-rv64uf-v-fcvt_w     rv64uf-v-fcvt_w.S
+        sarg-rv64uf-v-fdiv       rv64uf-v-fdiv.S
+        sarg-rv64uf-v-fmadd      rv64uf-v-fmadd.S
+        sarg-rv64uf-v-fmin       rv64uf-v-fmin.S
+        sarg-rv64uf-v-ldst       rv64uf-v-ldst.S
+        sarg-rv64uf-v-move       rv64uf-v-move.S
+        sarg-rv64uf-v-recoding   rv64uf-v-recoding.S
+        sarg-rv64ud-v-fadd       rv64ud-v-fadd.S
+        sarg-rv64ud-v-fclass     rv64ud-v-fclass.S
+        sarg-rv64ud-v-fcmp       rv64ud-v-fcmp.S
+        sarg-rv64ud-v-fcvt       rv64ud-v-fcvt.S
+        sarg-rv64ud-v-fcvt_w     rv64ud-v-fcvt_w.S
+        sarg-rv64ud-v-fdiv       rv64ud-v-fdiv.S
+        sarg-rv64ud-v-fmadd      rv64ud-v-fmadd.S
+        sarg-rv64ud-v-fmin       rv64ud-v-fmin.S
+        sarg-rv64ud-v-ldst       rv64ud-v-ldst.S
+        sarg-rv64ud-v-move       rv64ud-v-move.S
+        sarg-rv64ud-v-recoding   rv64ud-v-recoding.S
+        // sarg-rv64ud-v-structural rv64ud-v-structural.S
+        </runargs>
+    </sarg_tile1_fp_tests_v>
+
+    // note: these asm tests assume that the RISCV tests have been precompiled with the
+    // correct environment
+    <sarg_tile1_benchmarks>
+        <runargs -x_tiles=1 -y_tiles=1 -sarg -precompiled -rtl_timeout=1000000000 -max_cycle=100000000>
+            sarg-dhrystone          dhrystone.riscv
+            //sarg-fd-bubblesort      fd-bubblesort.riscv
+            //sarg-fd-matrix_mult     fd-matrix_mult.riscv
+            sarg-fd-median          fd-median.riscv
+            sarg-fd-multiply        fd-multiply.riscv
+            sarg-fd-spmv            fd-spmv.riscv
+            sarg-fd-vvadd           fd-vvadd.riscv
+            //sarg-fibonacci          fibonacci.riscv
+            sarg-histogram          histogram.riscv
+            //sarg-int-bubblesort     int-bubblesort.riscv
+            //sarg-int-matrix_mult    int-matrix_mult.riscv
+            sarg-int-median         int-median.riscv
+            sarg-int-multiply       int-multiply.riscv
+            sarg-int-spmv           int-spmv.riscv
+            sarg-int-vvadd          int-vvadd.riscv
+            sarg-mm                 mm.riscv
+            sarg-qsort              qsort.riscv
+            sarg-rsort              rsort.riscv
+            sarg-towers             towers.riscv
+        </runargs>
+    </sarg_tile1_benchmarks>
+
+    // note: these asm tests assume that the RISCV tests have been precompiled with the
+    // correct environment
+    <sarg_tile1_mt_benchmarks>
+        <runargs -x_tiles=1 -y_tiles=1 -sarg -precompiled -rtl_timeout=1000000000 -max_cycle=100000000>
+            sarg-mt-axpy            mt-axpy.riscv
+            //sarg-mt-blackscholes    mt-blackscholes.riscv
+            sarg-mt-histogram       mt-histogram.riscv
+            sarg-mt-int-sort        mt-int-sort.riscv
+            //sarg-mt-jacobi_2d       mt-jacobi_2d.riscv
+            //sarg-mt-matmul          mt-matmul.riscv
+            sarg-mt-somier          mt-somier.riscv
+            sarg-mt-stream-copy     mt-stream-copy.riscv
+            sarg-mt-stream-triad    mt-stream-triad.riscv
+        </runargs>
+    </sarg_tile1_mt_benchmarks>
+
+    <sarg_tile1_simple>
+        <runargs -x_tiles=1 -y_tiles=1 -sarg -rtl_timeout 1000000>
+            sarg-hello-world  hello_world.c
+            sarg-accu         accu_test.c
+            sarg-amo-align    amo_align.c
+        </runargs>
+    </sarg_tile1_simple>
+
+</cmp_default>
+</sarg_tile1>
 
 <tile1 sys=manycore -x_tiles=1 -y_tiles=1>
 <cmp_default name=default>

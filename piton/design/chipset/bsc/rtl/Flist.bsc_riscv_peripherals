@@ -1,0 +1,7 @@
++incdir+../../../common/pulp-platform/axi/src/
++incdir+../../../common/pulp-platform/axi/include/
+../../../common/pulp-platform/axi/src/axi_pkg.sv
+
+../../../common/pulp-platform/axi/src/axi_intf.sv
+../../../common/axi_utils/src/axiu_axilite_to_memport.sv
+./bsc_riscv_peripherals.sv

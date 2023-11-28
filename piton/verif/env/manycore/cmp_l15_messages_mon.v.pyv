@@ -951,7 +951,7 @@ begin
             `else
                 if (`L15_PIPE0.l15_wmt_write_val_s3)
                 begin
-                $display("   TILE0 WMT write index: %x", `L15_PIPE0.cache_index_l1d_s3[`L1D_SET_IDX_MASK]);
+                    $display("   TILE0 WMT write index: %x", `L15_PIPE0.cache_index_l1d_s3[`L1D_SET_IDX_MASK]);
                     // $display("   WMT write mask: %x", `L15_PIPE0.l15_wmt_write_mask_s3);
                     // $display("   WMT write data: %x", `L15_PIPE0.l15_wmt_write_data_s3);
                     // $display("   WMT way0 m%x d0x%x", `L15_PIPE0.l15_wmt_write_mask_s3[`L15_WMT_ENTRY_0_MASK], `L15_PIPE0.wmt_write_data_s3[`L15_WMT_ENTRY_0_MASK]);
